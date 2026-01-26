@@ -5,6 +5,7 @@ import os
 
 BOT_TOKEN=os.getenv("BOT_TOKEN")
 CHAT_ID=os.getenv("CHAT_ID")
+SHEET_ID=os.getenv("SHEET_ID")   # 🔥 NEW (Google Sheet)
 
 def send_message(text):
     url=f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
@@ -34,8 +35,18 @@ College Email: {r.get('EMAIL ID','')}
 """.strip()
 
 def check_birthdays():
-    df=pd.read_excel("students.xlsx")
 
+    # =====================================================
+    # ❌ OLD METHOD (EXCEL FILE) — KEPT FOR REFERENCE
+    # =====================================================
+    # df=pd.read_excel("students.xlsx")
+    # df.columns=df.columns.str.strip()
+
+    # =====================================================
+    # ✅ NEW METHOD (GOOGLE SHEETS) — ACTIVE
+    # =====================================================
+    url=f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/export?format=csv"
+    df=pd.read_csv(url)
     df.columns=df.columns.str.strip()
 
     today=datetime.now().strftime("%d-%m")
@@ -43,12 +54,12 @@ def check_birthdays():
 
     today_students=df[df["DoB"]==today]
 
-    # ✅ THIS PART HANDLES "NO BIRTHDAY"
+    # ✅ NO BIRTHDAY CASE
     if today_students.empty:
         send_message("🎂 No birthday today.")
         return
 
-    # ✅ IF BIRTHDAYS EXIST
+    # ✅ BIRTHDAY FOUND
     for _,r in today_students.iterrows():
         send_message(format_student(r))
 
