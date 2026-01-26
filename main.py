@@ -5,7 +5,9 @@ import os
 
 BOT_TOKEN=os.getenv("BOT_TOKEN")
 CHAT_ID=os.getenv("CHAT_ID")
-SHEET_ID=os.getenv("SHEET_ID")   # 🔥 NEW (Google Sheet)
+
+# 🔥 NEW: use direct CSV URL (GViz)
+CSV_URL=os.getenv("CSV_URL")
 
 def send_message(text):
     url=f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
@@ -43,10 +45,16 @@ def check_birthdays():
     # df.columns=df.columns.str.strip()
 
     # =====================================================
-    # ✅ NEW METHOD (GOOGLE SHEETS) — ACTIVE
+    # ❌ OLD GOOGLE SHEETS METHOD (CAUSES 404) — KEPT
     # =====================================================
-    url = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/export?format=csv&gid=405663098"
-    df=pd.read_csv(url)
+    # SHEET_ID=os.getenv("SHEET_ID")
+    # url=f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/export?format=csv&gid=405663098"
+    # df=pd.read_csv(url)
+
+    # =====================================================
+    # ✅ NEW & WORKING METHOD (GViz CSV)
+    # =====================================================
+    df=pd.read_csv(CSV_URL)
     df.columns=df.columns.str.strip()
 
     today=datetime.now().strftime("%d-%m")
@@ -54,12 +62,10 @@ def check_birthdays():
 
     today_students=df[df["DoB"]==today]
 
-    # ✅ NO BIRTHDAY CASE
     if today_students.empty:
         send_message("🎂 No birthday today.")
         return
 
-    # ✅ BIRTHDAY FOUND
     for _,r in today_students.iterrows():
         send_message(format_student(r))
 
