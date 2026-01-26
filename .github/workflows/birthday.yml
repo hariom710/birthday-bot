@@ -1,4 +1,3 @@
-
 name: Daily Birthday Bot
 
 on:
@@ -26,4 +25,5 @@ jobs:
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
+          CSV_URL: ${{ secrets.CSV_URL }}
         run: python main.py
