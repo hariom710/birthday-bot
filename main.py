@@ -45,7 +45,7 @@ def check_birthdays():
     # =====================================================
     # ✅ NEW METHOD (GOOGLE SHEETS) — ACTIVE
     # =====================================================
-    url=f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/export?format=csv"
+    url = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/export?format=csv&gid=405663098"
     df=pd.read_csv(url)
     df.columns=df.columns.str.strip()
 
