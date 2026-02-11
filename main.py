@@ -1,5 +1,6 @@
 import pandas as pd
 from datetime import datetime
+from zoneinfo import ZoneInfo   # ✅ ADDED: For Indian timezone
 import requests
 import os
 
@@ -57,7 +58,10 @@ def check_birthdays():
     df=pd.read_csv(CSV_URL)
     df.columns=df.columns.str.strip()
 
-    today=datetime.now().strftime("%d-%m")
+    # ✅ CHANGED: Now using Indian Time (IST)
+    today=datetime.now(ZoneInfo("Asia/Kolkata")).strftime("%d-%m")
+    # today=datetime.now().strftime("%d-%m")
+
     df["DoB"]=pd.to_datetime(df["DoB"],errors="coerce").dt.strftime("%d-%m")
 
     today_students=df[df["DoB"]==today]
